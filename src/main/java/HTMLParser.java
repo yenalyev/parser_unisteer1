@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -55,9 +56,14 @@ public class HTMLParser {
                         cell3.setCellValue(fin3.text());
                         cellInstallInstructions.setCellValue(fin3.attr("abs:href"));
 
-                        Elements fin4 = doc1.select("#tab-description").select("href");
-                        Cell cell7 = row.createCell(7);
-                        cell7.setCellValue(fin4.text());
+                        Elements links = doc1.select("a[href]");
+                        for (Element element: links){
+                            if (element.text().equals("CLICK HERE TO LOOK AT PRODUCT INSTRUCTIONS")){
+                                Cell cell7 = row.createCell(7);
+                                cell7.setCellValue(element.attr("href"));
+                            }
+                        }
+
 
                         Elements skuImage = doc1.select(".image").select("href");
                         Cell cell8 = row.createCell(8);
@@ -68,10 +74,11 @@ public class HTMLParser {
                         System.out.println("Missing sku # " + sku);
                         continue;
                     }
-                    System.out.println(linkToParse);
+
                     //String title = doc.title();
                     //System.out.println(title);
                     System.out.println("Parsing SKU No " + i + " ...");
+                    System.out.println(linkToParse);
                 } catch (IOException e) {
                     e.printStackTrace();
                     System.out.println("Connection to SKU No" + i + " has been failed...");
@@ -89,10 +96,13 @@ public class HTMLParser {
                 Cell cell7 = row.createCell(7);
                 cell7.setCellValue(fin8.attr("abs:src"));*/
 
+            } else {
+                break;
             }
             //break;
         }
-        Excel.WriteHSSFWorkbook("C:\\Users\\Максим\\Desktop\\Parse_Unisteer.xls", wb);
+        Excel.WriteHSSFWorkbook("C:\\Users\\Maxim\\Desktop\\Parse_Unisteer.xls", wb);
+        System.out.println("Done!");
     }
 
 }
